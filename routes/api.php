@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -23,9 +24,7 @@ Route::middleware(['auth:sanctum', 'role:owner_bengkel'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', fn() => response()->json(['message' => 'Welcome User']));
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile', [ProfileController::class, 'update']);
 });
 
