@@ -25,6 +25,6 @@ Route::middleware(['auth:sanctum', 'role:owner_bengkel'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
-    Route::post('/profile', [ProfileController::class, 'update']);
+    Route::put('/profile', [ProfileController::class, 'update']);
 });
 
