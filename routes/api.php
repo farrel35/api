@@ -9,13 +9,12 @@ use App\Http\Controllers\ProfileController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/bengkel', [BengkelController::class, 'index']);
+Route::get('/bengkel/{id}', [BengkelController::class, 'show']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::post('/profile', [ProfileController::class, 'update']);
-
-    Route::get('/bengkel', [BengkelController::class, 'index']);
-    Route::get('/bengkel/{id}', [BengkelController::class, 'show']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
