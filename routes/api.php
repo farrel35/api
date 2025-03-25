@@ -11,9 +11,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return response()->json($request->user());
-    });
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile', [ProfileController::class, 'update']);
 
     Route::get('/bengkel', [BengkelController::class, 'index']);
     Route::get('/bengkel/{id}', [BengkelController::class, 'show']);
@@ -32,7 +31,6 @@ Route::middleware(['auth:sanctum', 'role:owner_bengkel'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show']);
-    Route::post('/profile', [ProfileController::class, 'update']);
+
 });
 
