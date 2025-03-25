@@ -16,6 +16,7 @@ class Bengkel extends Model
         'jam_selesai',
         'lat',
         'long',
+        'image',
         'owner_id'
     ];
 

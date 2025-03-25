@@ -6,6 +6,7 @@ use App\Models\Bengkel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BengkelController extends Controller
 {
@@ -42,16 +43,22 @@ class BengkelController extends Controller
             'jam_selesai' => 'required',
             'lat' => 'required|numeric',
             'long' => 'required|numeric',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $validated['owner_id'] = auth()->id();
 
+        $imagePath = $request->file('image')->store('bengkel_images', 'public');
+        $validated['image'] = $imagePath;
+
         $bengkel = Bengkel::create($validated);
+
         return response()->json([
-            'message' => 'Bengkel insert successfully',
+            'message' => 'Bengkel created successfully',
             'bengkel' => $bengkel
-        ]);
+        ], 201);
     }
+
 
     public function show($id)
     {
@@ -67,7 +74,26 @@ class BengkelController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $bengkel->update($request->only(['nama', 'deskripsi', 'jam_buka', 'jam_selesai', 'lat', 'long']));
+        $validated = $request->validate([
+            'nama' => 'sometimes|required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'jam_buka' => 'sometimes|required',
+            'jam_selesai' => 'sometimes|required',
+            'lat' => 'sometimes|required|numeric',
+            'long' => 'sometimes|required|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+
+        if ($request->hasFile('image')) {
+            if ($bengkel->image) {
+                Storage::disk('public')->delete($bengkel->image);
+            }
+            $validated['image'] = $request->file('image')->store('bengkel_images', 'public');
+        }
+
+        $bengkel->update($validated);
+
         return response()->json([
             'message' => 'Bengkel updated successfully',
             'bengkel' => $bengkel
