@@ -115,6 +115,20 @@ class BengkelController extends Controller
     public function getByOwner()
     {
         $user = auth()->user();
-        return response()->json(Bengkel::where('owner_id', $user->id)->first());
+
+        $bengkel = Bengkel::where('owner_id', $user->id)->first();
+
+        if (!$bengkel) {
+            return response()->json(null, 404);
+        }
+
+        $data = $bengkel->toArray();
+        $data['image'] = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
+
+        return response()->json([
+            'message' => 'Bengkel updated successfully',
+            'bengkel' => $data
+        ]);
     }
+
 }
