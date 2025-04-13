@@ -125,10 +125,7 @@ class BengkelController extends Controller
         $data = $bengkel->toArray();
         $data['image'] = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
 
-        return response()->json([
-            'message' => 'Bengkel updated successfully',
-            'bengkel' => $data
-        ]);
+        return response()->json($data);
     }
 
 }
