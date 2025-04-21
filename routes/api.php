@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\BookingServisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BengkelController;
 use App\Http\Controllers\ProfileController;
+
+// Universal
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -13,14 +16,27 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::get('/bengkel', [BengkelController::class, 'index']);
 Route::get('/bengkel/{id}', [BengkelController::class, 'show']);
 
+
+// End Universal
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::post('/profile', [ProfileController::class, 'update']);
+    Route::get('/booking-servis/{id}', [BookingServisController::class, 'show']);
+    Route::put('/booking-servis/{id}', [BookingServisController::class, 'update']);
 });
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', fn() => response()->json(['message' => 'Welcome Admin']));
+// User
+
+Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
+    Route::post('/booking-servis', [BookingServisController::class, 'store']);
+    Route::delete('/booking-servis/{id}', [BookingServisController::class, 'destroy']);
+    Route::get('/user/booking-servis', [BookingServisController::class, 'getByUserId']);
 });
+
+// End User
+
+// Owner bengkel
 
 Route::middleware(['auth:sanctum', 'role:owner_bengkel'])->group(function () {
     Route::post('/bengkel', [BengkelController::class, 'store']);
@@ -28,9 +44,18 @@ Route::middleware(['auth:sanctum', 'role:owner_bengkel'])->group(function () {
     Route::delete('/bengkel/{id}', [BengkelController::class, 'destroy']);
 
     Route::get('/owner/bengkel', [BengkelController::class, 'getByOwner']);
+    Route::get('/owner/booking-servis', [BookingServisController::class, 'getByOwnerId']);
 });
 
-Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
+// End Owner bengkel
 
+// Admin
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/booking-servis', [BookingServisController::class, 'index']);
 });
+
+// End Admin
+
+
 
