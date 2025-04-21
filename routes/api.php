@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
 Route::get('/bengkel', [BengkelController::class, 'index']);
 Route::get('/bengkel/{id}', [BengkelController::class, 'show']);
 

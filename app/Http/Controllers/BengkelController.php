@@ -26,7 +26,11 @@ class BengkelController extends Controller
         )
             ->orderBy('distance') // Sort by nearest
             ->get();
-
+        // Modify image path for each bengkel
+        $bengkels = $bengkels->map(function ($bengkel) {
+            $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
+            return $bengkel;
+        });
         return response()->json($bengkels);
     }
 
