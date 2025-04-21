@@ -123,7 +123,7 @@ class BengkelController extends Controller
         $bengkel = Bengkel::where('owner_id', $user->id)->first();
 
         if (!$bengkel) {
-            return response()->json(null, 404);
+            return response()->json(['message' => 'Bengkel not found'], 404);
         }
 
         $data = $bengkel->toArray();
