@@ -38,7 +38,7 @@ Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
 
 // Owner bengkel
 
-Route::middleware(['auth:sanctum', 'role:owner_bengkel'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin_bengkel'])->group(function () {
     Route::post('/bengkel', [BengkelController::class, 'store']);
     Route::post('/bengkel/{id}', [BengkelController::class, 'update']);
     Route::delete('/bengkel/{id}', [BengkelController::class, 'destroy']);

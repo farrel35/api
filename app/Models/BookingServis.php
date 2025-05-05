@@ -11,13 +11,27 @@ class BookingServis extends Model
 
     protected $fillable = [
         'nama',
-        'jenis_kendaraan',
+        'no_hp',
+        'nama_kendaraan',
         'plat',
         'keluhan',
         'status',
         'user_id',
-        'bengkel_id'
+        'bengkel_id',
+        'tgl_booking',
+        'tgl_ambil',
+        'detail_servis',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'tgl_booking' => 'datetime',
+            'tgl_ambil' => 'datetime',
+            'detail_servis' => 'array',
+            'status' => 'integer',
+        ];
+    }
 
     // Relationship with User model
     public function user()
@@ -30,4 +44,5 @@ class BookingServis extends Model
     {
         return $this->belongsTo(Bengkel::class, 'bengkel_id');
     }
+
 }

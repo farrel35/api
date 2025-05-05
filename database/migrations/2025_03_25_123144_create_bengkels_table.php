@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('bengkels', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->longText('alamat');
             $table->text('deskripsi')->nullable();
             $table->time('jam_buka');
             $table->time('jam_selesai');

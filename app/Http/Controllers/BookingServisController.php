@@ -19,14 +19,16 @@ class BookingServisController extends Controller
         $user = auth()->user();
 
         $validated = $request->validate([
-            'jenis_kendaraan' => 'required|string',
+            'nama_kendaraan' => 'required|string',
             'plat' => 'required|string',
             'keluhan' => 'required|string',
-            'status' => 'required|in:pending,onprogress,completed',
+            'tgl_booking' => 'required|date',
+            'status' => 'required|integer|in:0,1,2,3,4',
             'bengkel_id' => 'required|exists:bengkels,id',
         ]);
 
         $validated['nama'] = $user->name;
+        $validated['no_hp'] = $user->no_hp;
         $validated['user_id'] = $user->id;
 
         $booking = BookingServis::create($validated);
@@ -62,25 +64,27 @@ class BookingServisController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 
-            $request->validate([
-                'jenis_kendaraan' => 'sometimes|string',
+            $validated = $request->validate([
+                'nama_kendaraan' => 'sometimes|string',
                 'plat' => 'sometimes|string',
                 'keluhan' => 'sometimes|string',
+                'tgl_ambil' => 'sometimes|date',
             ]);
 
-            $booking->update($request->only(['jenis_kendaraan', 'plat', 'keluhan']));
-        } elseif ($user->role === 'owner_bengkel') {
+            $booking->update($validated);
+        } elseif ($user->role === 'admin_bengkel') {
             if ($booking->bengkel->owner_id !== $user->id) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 
-            $request->validate([
-                'status' => 'required|in:pending,onprogress,completed',
+            $validated = $request->validate([
+                'status' => 'sometimes|integer|in:0,1,2,3,4',
+                'detail_servis' => 'sometimes|required|array|min:1',  // Validate it's an array
+                'detail_servis.*.sparepart' => 'required|string',
+                'detail_servis.*.harga' => 'required|numeric|min:1',
             ]);
 
-            $booking->update([
-                'status' => $request->status,
-            ]);
+            $booking->update($validated);
         }
 
         return response()->json($booking->makeHidden('bengkel'));

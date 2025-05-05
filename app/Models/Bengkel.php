@@ -11,6 +11,7 @@ class Bengkel extends Model
 
     protected $fillable = [
         'nama',
+        'alamat',
         'deskripsi',
         'jam_buka',
         'jam_selesai',

@@ -42,6 +42,7 @@ class BengkelController extends Controller
 
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
+            'alamat' => 'required|string',
             'deskripsi' => 'nullable|string',
             'jam_buka' => 'required',
             'jam_selesai' => 'required',
@@ -80,6 +81,7 @@ class BengkelController extends Controller
 
         $validated = $request->validate([
             'nama' => 'sometimes|required|string|max:255',
+            'alamat' => 'sometimes|string',
             'deskripsi' => 'nullable|string',
             'jam_buka' => 'sometimes|required',
             'jam_selesai' => 'sometimes|required',

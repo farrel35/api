@@ -15,6 +15,7 @@ class ProfileController extends Controller
         return response()->json([
             'id' => $user->id,
             'name' => $user->name,
+            'no_hp' => $user->no_hp,
             'email' => $user->email,
             'role' => $user->role,
             'image' => $user->image ? asset('storage/' . $user->image) : null,
@@ -27,6 +28,7 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
+            'no_hp' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|required|string|min:6',
             'image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
@@ -46,6 +48,7 @@ class ProfileController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
+                'no_hp' => $user->no_hp,
                 'email' => $user->email,
                 'image' => $user->image ? asset('storage/' . $user->image) : null,
             ]
