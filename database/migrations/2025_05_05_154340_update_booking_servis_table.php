@@ -16,7 +16,7 @@ return new class extends Migration {
             // Add new columns
             $table->string('no_hp')->after('nama');
             $table->timestamp('tgl_booking')->after('keluhan');
-            $table->json('detail_servis')->after('tgl_booking');
+            $table->json('detail_servis')->nullable()->after('tgl_booking');
             $table->timestamp('tgl_ambil')->nullable()->after('detail_servis');
 
             // Change status to integer if it exists
