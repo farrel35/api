@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookingServisController;
+use App\Http\Controllers\SparepartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -16,6 +17,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::get('/bengkel', [BengkelController::class, 'index']);
 Route::get('/bengkel/{id}', [BengkelController::class, 'show']);
 
+Route::get('/bengkel/sparepart/{id}', [SparepartController::class, 'getByBengkelId']);
 
 // End Universal
 
@@ -45,6 +47,11 @@ Route::middleware(['auth:sanctum', 'role:admin_bengkel'])->group(function () {
 
     Route::get('/owner/bengkel', [BengkelController::class, 'getByOwner']);
     Route::get('/owner/booking-servis', [BookingServisController::class, 'getByOwnerId']);
+
+    Route::post('/owner/sparepart', [SparepartController::class, 'store']);
+    Route::post('/owner/sparepart/{id}', [SparepartController::class, 'update']);
+    Route::delete('/owner/sparepart/{id}', [SparepartController::class, 'destroy']);
+    Route::get('/owner/sparepart', [SparepartController::class, 'getByOwnerId']);
 });
 
 // End Owner bengkel
