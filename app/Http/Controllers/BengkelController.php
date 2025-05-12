@@ -68,6 +68,10 @@ class BengkelController extends Controller
     public function show($id)
     {
         $bengkel = Bengkel::findOrFail($id);
+
+        // Add full image URL path
+        $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
+
         return response()->json($bengkel);
     }
 
