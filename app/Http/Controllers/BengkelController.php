@@ -26,11 +26,7 @@ class BengkelController extends Controller
         )
             ->orderBy('distance') // Sort by nearest
             ->get();
-        // Modify image path for each bengkel
-        $bengkels = $bengkels->map(function ($bengkel) {
-            $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
-            return $bengkel;
-        });
+
         return response()->json($bengkels);
     }
 
@@ -80,8 +76,6 @@ class BengkelController extends Controller
             DB::raw("ROUND((6371000 * acos(cos(radians($latitude)) * cos(radians(lat)) * cos(radians(`long`) - radians($longitude)) + sin(radians($latitude)) * sin(radians(lat)))), 2) AS distance")
         )->findOrFail($id);
 
-        // Modify image path
-        $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
 
         return response()->json($bengkel);
     }
@@ -145,7 +139,6 @@ class BengkelController extends Controller
         }
 
         $data = $bengkel->toArray();
-        $data['image'] = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
 
         return response()->json($data);
     }
