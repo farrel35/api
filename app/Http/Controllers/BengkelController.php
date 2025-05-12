@@ -22,10 +22,16 @@ class BengkelController extends Controller
 
         $bengkels = Bengkel::select(
             'bengkels.*',
-            DB::raw("ROUND((6371000 * acos(cos(radians($latitude)) * cos(radians(lat)) * cos(radians(`long`) - radians($longitude)) + sin(radians($latitude)) * sin(radians(lat)))), 2) AS distance")
+            DB::raw("ROUND((6371000 * acos(
+        cos(radians(?)) * cos(radians(lat)) *
+        cos(radians(`long`) - radians(?)) +
+        sin(radians(?)) * sin(radians(lat))
+    )), 2) AS distance")
         )
-            ->orderBy('distance') // Sort by nearest
+            ->addBinding([$latitude, $longitude, $latitude], 'select')
+            ->orderBy('distance')
             ->get();
+
 
         return response()->json($bengkels);
     }
@@ -71,10 +77,16 @@ class BengkelController extends Controller
         $latitude = $request->lat;
         $longitude = $request->long;
 
+        $latitude = $request->lat;
+        $longitude = $request->long;
+
         $bengkel = Bengkel::select(
             'bengkels.*',
-            DB::raw("ROUND((6371000 * acos(cos(radians($latitude)) * cos(radians(lat)) * cos(radians(`long`) - radians($longitude)) + sin(radians($latitude)) * sin(radians(lat)))), 2) AS distance")
-        )->findOrFail($id);
+            DB::raw("ROUND((6371000 * acos(cos(radians(?)) * cos(radians(lat)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(lat)))), 2) AS distance")
+        )
+            ->addBinding([$latitude, $longitude, $latitude], 'select') // Add bindings
+            ->findOrFail($id);
+
 
 
         return response()->json($bengkel);
