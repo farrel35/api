@@ -65,15 +65,27 @@ class BengkelController extends Controller
     }
 
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $bengkel = Bengkel::findOrFail($id);
+        $request->validate([
+            'lat' => 'required|numeric',
+            'long' => 'required|numeric',
+        ]);
 
-        // Add full image URL path
+        $latitude = $request->lat;
+        $longitude = $request->long;
+
+        $bengkel = Bengkel::select(
+            'bengkels.*',
+            DB::raw("ROUND((6371000 * acos(cos(radians($latitude)) * cos(radians(lat)) * cos(radians(`long`) - radians($longitude)) + sin(radians($latitude)) * sin(radians(lat)))), 2) AS distance")
+        )->findOrFail($id);
+
+        // Modify image path
         $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
 
         return response()->json($bengkel);
     }
+
 
     public function update(Request $request, $id)
     {
