@@ -80,15 +80,57 @@ class BookingServisController extends Controller
             $validated = $request->validate([
                 'status' => 'sometimes|integer|in:0,1,2,3,4',
                 'detail_servis' => 'sometimes|required|array|min:1',  // Validate it's an array
-                'detail_servis.*.sparepart' => 'required|string',
-                'detail_servis.*.harga' => 'required|numeric|min:1',
+                'detail_servis.*.sparepart' => 'required_without:detail_servis.*.jasa|string',  // Validate sparepart if jasa is not present
+                'detail_servis.*.harga_sparepart' => 'required_without:detail_servis.*.jasa|numeric|min:1',  // Validate harga_sparepart if jasa is not present
+                'detail_servis.*.jasa' => 'required_without:detail_servis.*.sparepart|string',  // Validate jasa if sparepart is not present
+                'detail_servis.*.harga_jasa' => 'required_without:detail_servis.*.sparepart|numeric|min:1',  // Validate harga_jasa if jasa is present
             ]);
 
+
             $booking->update($validated);
+
+            if ($request->has('status') && $request->status == 2) {
+                $sendNotificationController = app(SendNotification::class);
+
+                $message = "Pemberitahuan: Kendaraan Anda telah selesai diservis.\n\n";
+                $message .= "Nama Pemilik: " . $booking->nama . "\n";
+                $message .= "Nama Kendaraan: " . $booking->nama_kendaraan . "\n";
+                $message .= "Plat Nomor: " . $booking->plat . "\n";
+                $message .= "Keluhan: " . $booking->keluhan . "\n";
+                $message .= "Tanggal Booking: " . $booking->tgl_booking . "\n\n";
+                $message .= "Silakan untuk melakukan konfirmasi pengambilan kendaraan melalui website kami.\n\n";
+
+                $details = is_string($booking->detail_servis) ? json_decode($booking->detail_servis, true) : $booking->detail_servis;
+
+                $totalHarga = 0;  // Initialize total price variable
+                if ($details && is_array($details)) {
+                    $message .= "Detail Servis:\n";
+                    foreach ($details as $detail) {
+                        if (isset($detail['sparepart'])) {
+                            // Handle sparepart
+                            $message .= "- Sparepart: " . $detail['sparepart'] . ", Harga: Rp " . number_format($detail['harga_sparepart'], 0, ',', '.') . "\n";
+                            $totalHarga += $detail['harga_sparepart'];  // Add sparepart price to total
+                        } elseif (isset($detail['jasa'])) {
+                            // Handle jasa (service)
+                            $message .= "- Jasa: " . $detail['jasa'] . ", Harga: Rp " . number_format($detail['harga_jasa'], 0, ',', '.') . "\n";
+                            $totalHarga += $detail['harga_jasa'];  // Add jasa price to total
+                        }
+                    }
+                    $message .= "\nTotal Harga: Rp " . number_format($totalHarga, 0, ',', '.') . "\n";
+                }
+
+
+                $target = $booking->no_hp;
+
+                $sendNotificationController->sendWhatsappMessage(new Request([
+                    'target' => $target,
+                    'message' => $message,
+                ]));
+            }
+
         }
 
         return response()->json($booking->makeHidden('bengkel'));
-
     }
 
     public function destroy($id)
