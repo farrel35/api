@@ -19,15 +19,21 @@ class BookingServis extends Model
         'user_id',
         'bengkel_id',
         'tgl_booking',
+        'jam_booking',
         'tgl_ambil',
+        'jam_ambil',
+        'jenis_layanan',
         'detail_servis',
     ];
 
     protected function casts(): array
     {
         return [
-            'tgl_booking' => 'datetime',
-            'tgl_ambil' => 'datetime',
+            'tgl_booking' => 'date',
+            'tgl_ambil' => 'date',
+            'jam_booking' => 'string',
+            'jam_ambil' => 'string',
+            'jenis_layanan' => 'array',
             'detail_servis' => 'array',
             'status' => 'integer',
         ];

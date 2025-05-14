@@ -23,6 +23,10 @@ class BookingServisController extends Controller
             'plat' => 'required|string',
             'keluhan' => 'required|string',
             'tgl_booking' => 'required|date',
+            'jam_booking' => 'required|date_format:H:i',
+            'jenis_layanan' => 'sometimes|required|array|min:1',
+            'jenis_layanan.*.layanan' => 'required|string',
+            'jenis_layanan.*.harga_layanan' => 'required|numeric|min:1',
             'status' => 'required|integer|in:0,1,2,3,4',
             'bengkel_id' => 'required|exists:bengkels,id',
         ]);
@@ -69,6 +73,7 @@ class BookingServisController extends Controller
                 'plat' => 'sometimes|string',
                 'keluhan' => 'sometimes|string',
                 'tgl_ambil' => 'sometimes|date',
+                'jam_ambil' => 'sometimes|date_format:H:i',
             ]);
 
             $booking->update($validated);

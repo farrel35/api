@@ -15,9 +15,12 @@ return new class extends Migration {
 
             // Add new columns
             $table->string('no_hp')->after('nama');
-            $table->timestamp('tgl_booking')->after('keluhan');
-            $table->json('detail_servis')->nullable()->after('tgl_booking');
-            $table->timestamp('tgl_ambil')->nullable()->after('detail_servis');
+            $table->date('tgl_booking')->after('keluhan');
+            $table->time('jam_booking')->after('tgl_booking');
+            $table->json('jenis_layanan')->nullable()->after('jam_booking');
+            $table->json('detail_servis')->nullable()->after('jenis_layanan');
+            $table->date('tgl_ambil')->nullable()->after('detail_servis');
+            $table->time('jam_ambil')->nullable()->after('tgl_ambil');
 
             // Change status to integer if it exists
             $table->unsignedTinyInteger('status')->default(0)->change();
@@ -33,7 +36,15 @@ return new class extends Migration {
             }
 
             // Drop added columns
-            $table->dropColumn(['no_hp', 'tgl_booking', 'tgl_ambil', 'detail_servis']);
+            $table->dropColumn([
+                'no_hp',
+                'tgl_booking',
+                'jam_booking',
+                'jenis_layanan',
+                'detail_servis',
+                'tgl_ambil',
+                'jam_ambil'
+            ]);
 
             // Revert status back to string
             $table->string('status')->change();
