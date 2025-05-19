@@ -60,9 +60,8 @@ class UserResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->visible(fn(User $record) => $record->role !== 'admin'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->visible(fn(User $record) => $record->role !== 'admin'),
+                Tables\Actions\DeleteAction::make()->visible(fn(User $record) => $record->role !== 'admin'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
