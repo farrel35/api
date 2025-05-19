@@ -32,7 +32,10 @@ class BengkelController extends Controller
             ->orderBy('distance')
             ->get();
 
-
+        $bengkels = $bengkels->map(function ($bengkel) {
+            $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
+            return $bengkel;
+        });
         return response()->json($bengkels);
     }
 
@@ -56,7 +59,7 @@ class BengkelController extends Controller
         $validated['owner_id'] = auth()->id();
 
         $imagePath = $request->file('image')->store('bengkel_images', 'public');
-        $validated['image'] = asset('storage/' . $imagePath);
+        $validated['image'] = $imagePath;
 
         $bengkel = Bengkel::create($validated);
 
@@ -87,7 +90,7 @@ class BengkelController extends Controller
             ->addBinding([$latitude, $longitude, $latitude], 'select') // Add bindings
             ->findOrFail($id);
 
-
+        $bengkel->image = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
 
         return response()->json($bengkel);
     }
@@ -151,6 +154,7 @@ class BengkelController extends Controller
         }
 
         $data = $bengkel->toArray();
+        $data['image'] = $bengkel->image ? asset('storage/' . $bengkel->image) : null;
 
         return response()->json($data);
     }
