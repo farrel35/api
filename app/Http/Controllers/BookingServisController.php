@@ -84,11 +84,10 @@ class BookingServisController extends Controller
 
             $validated = $request->validate([
                 'status' => 'sometimes|integer|in:0,1,2,3,4',
-                'detail_servis' => 'sometimes|required|array|min:1',  // Validate it's an array
-                'detail_servis.*.sparepart' => 'required_without:detail_servis.*.jasa|string',  // Validate sparepart if jasa is not present
-                'detail_servis.*.harga_sparepart' => 'required_without:detail_servis.*.jasa|numeric|min:1',  // Validate harga_sparepart if jasa is not present
-                'detail_servis.*.jasa' => 'required_without:detail_servis.*.sparepart|string',  // Validate jasa if sparepart is not present
-                'detail_servis.*.harga_jasa' => 'required_without:detail_servis.*.sparepart|numeric|min:1',  // Validate harga_jasa if jasa is present
+                'detail_servis' => 'sometimes|required|array|min:1',
+                'detail_servis.*' => 'required|array',
+                'detail_servis.*.sparepart' => 'required|string',
+                'detail_servis.*.harga_sparepart' => 'required|numeric|min:1',
             ]);
 
 
