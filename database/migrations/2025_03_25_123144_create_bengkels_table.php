@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->decimal('lat', 10, 7);
             $table->decimal('long', 10, 7);
             $table->longText('image')->nullable();
-            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('owner_id')->unique()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
