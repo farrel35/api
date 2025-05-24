@@ -25,4 +25,8 @@ class Bengkel extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+    public function getImageAttribute($value)
+    {
+        return asset('storage/' . $value);
+    }
 }

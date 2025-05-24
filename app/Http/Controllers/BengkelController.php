@@ -56,7 +56,7 @@ class BengkelController extends Controller
         $validated['owner_id'] = auth()->id();
 
         $imagePath = $request->file('image')->store('bengkel_images', 'public');
-        $validated['image'] = asset('storage/' . $imagePath);
+        $validated['image'] = $imagePath;
 
         $bengkel = Bengkel::create($validated);
 
