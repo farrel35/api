@@ -11,12 +11,19 @@ class CreateBookingServisTable extends Migration
         Schema::create('booking_servis', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('jenis_kendaraan');
+            $table->string('no_hp');
+            $table->string('nama_kendaraan');
             $table->string('plat');
             $table->text('keluhan');
-            $table->enum('status', ['pending', 'onprogress', 'completed'])->default('pending');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key for User
-            $table->foreignId('bengkel_id')->constrained()->onDelete('cascade'); // Foreign key for Bengkel
+            $table->date('tgl_booking');
+            $table->time('jam_booking');
+            $table->json('jenis_layanan')->nullable();
+            $table->json('detail_servis')->nullable();
+            $table->date('tgl_ambil')->nullable();
+            $table->time('jam_ambil')->nullable();
+            $table->unsignedTinyInteger('status')->default(0);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Foreign key for User
+            $table->foreignId('bengkel_id')->constrained('bengkels')->onDelete('cascade'); // Foreign key for Bengkel
             $table->timestamps();
         });
     }

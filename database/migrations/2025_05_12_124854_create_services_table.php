@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('nama');
             $table->string('deskripsi');
             $table->decimal('harga', 10, 2);
-            $table->foreignId('bengkel_id')->constrained()->onDelete('cascade'); // Foreign key for Bengkel
+            $table->foreignId('bengkel_id')->constrained('bengkels')->onDelete('cascade'); // Foreign key for Bengkel
             $table->timestamps();
         });
     }
